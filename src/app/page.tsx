@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { ArrowLeft, FileSignature } from 'lucide-react';
+import { ArrowLeft, FileSignature, LogIn } from 'lucide-react';
 import Link from 'next/link';
 
 export default function HomePage() {
@@ -45,19 +45,7 @@ export default function HomePage() {
             <Card className="text-right flex flex-col">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-6 h-6 text-accent"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-                    <path d="m9 12 2 2 4-4" />
-                  </svg>
+                  <LogIn className="w-6 h-6 text-accent" />
                   <span>אזור מנהל</span>
                 </CardTitle>
                 <CardDescription>
@@ -66,7 +54,7 @@ export default function HomePage() {
               </CardHeader>
               <CardContent className="flex-grow flex items-end">
                 <Button asChild size="lg" variant="outline" className="w-full">
-                  <Link href="/admin">
+                  <Link href="/login">
                     <span>כניסה למנהל</span>
                     <ArrowLeft className="mr-2 h-4 w-4" />
                   </Link>

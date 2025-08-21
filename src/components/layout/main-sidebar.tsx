@@ -10,10 +10,24 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Shield, Home, FileSignature } from 'lucide-react';
+import { Shield, Home, FileSignature, LogIn, LogOut } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Button } from '../ui/button';
 
 export function MainSidebar() {
   const { setOpenMobile } = useSidebar();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('isAuthenticated');
+    router.replace('/login');
+    setOpenMobile(false)
+  };
+
+  const isAdminPage = pathname.startsWith('/admin');
+
+
   return (
     <Sidebar side="right">
       <SidebarHeader className="p-4">
@@ -27,7 +41,7 @@ export function MainSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              isActive
+              isActive={pathname === '/'}
               tooltip={{ children: 'דף הבית', side: 'left' }}
               onClick={() => setOpenMobile(false)}
             >
@@ -40,6 +54,7 @@ export function MainSidebar() {
            <SidebarMenuItem>
             <SidebarMenuButton
               asChild
+              isActive={pathname.startsWith('/equipment')}
               tooltip={{ children: 'טופס ציוד', side: 'left' }}
               onClick={() => setOpenMobile(false)}
             >
@@ -49,18 +64,31 @@ export function MainSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              tooltip={{ children: 'ניהול', side: 'left' }}
-              onClick={() => setOpenMobile(false)}
-            >
-              <Link href="/admin">
-                <Shield />
-                <span>ניהול</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {isAdminPage ? (
+             <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={handleLogout}
+                  tooltip={{ children: 'התנתקות', side: 'left' }}
+                >
+                  <LogOut />
+                  <span>התנתקות</span>
+                </SidebarMenuButton>
+             </SidebarMenuItem>
+          ) : (
+             <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith('/login')}
+                tooltip={{ children: 'ניהול', side: 'left' }}
+                onClick={() => setOpenMobile(false)}
+              >
+                <Link href="/login">
+                  <LogIn />
+                  <span>ניהול</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarContent>
     </Sidebar>
