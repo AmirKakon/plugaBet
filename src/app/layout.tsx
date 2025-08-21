@@ -74,6 +74,17 @@ export default function RootLayout({
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
+                   <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={{ children: 'ניהול', side: 'left' }}
+                    >
+                      <Link href="/admin">
+                        <Shield />
+                        <span>ניהול</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarContent>
             </Sidebar>
