@@ -383,7 +383,7 @@ export function EquipmentForm() {
                 חזור
               </Button>
               <Button type="submit" disabled={isSubmitting} variant="default" size="lg" className="hover:bg-primary/80">
-                {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח וחתום"}
+                {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח"}
               </Button>
             </div>
           </div>
