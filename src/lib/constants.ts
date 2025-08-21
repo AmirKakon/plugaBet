@@ -20,7 +20,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     firstName: 'משה',
     lastName: 'כהן',
     soldierId: '1234567',
-    date: new Date(new Date().setDate(new Date().getDate() - 1)),
+    date: new Date('2024-08-20T10:00:00Z'),
     equipmentStatus: [
       { equipmentId: 'vehicle', status: 'ok', quantity: 1 },
       { equipmentId: 'radio_prc', status: 'ok', quantity: 2 },
@@ -36,7 +36,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     firstName: 'דנה',
     lastName: 'לוי',
     soldierId: '7654321',
-    date: new Date(new Date().setHours(new Date().getHours() - 6)),
+    date: new Date('2024-08-21T08:00:00Z'),
     equipmentStatus: EQUIPMENT_LIST.map((eq) => ({ equipmentId: eq.id, status: 'ok', quantity: eq.defaultQuantity })),
   },
   {
@@ -45,7 +45,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     firstName: 'אבי',
     lastName: 'ישראלי',
     soldierId: '1122334',
-    date: new Date(new Date().setHours(new Date().getHours() - 2)),
+    date: new Date('2024-08-21T12:30:00Z'),
     equipmentStatus: [
       { equipmentId: 'vehicle', status: 'issue', comment: 'צמיג קדמי ימני נראה נמוך', quantity: 1 },
       { equipmentId: 'radio_prc', status: 'ok', quantity: 2 },
@@ -61,7 +61,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     firstName: 'יעל',
     lastName: 'שחר',
     soldierId: '4455667',
-    date: new Date(new Date().setDate(new Date().getDate() - 2)),
+    date: new Date('2024-08-19T18:00:00Z'),
     equipmentStatus: EQUIPMENT_LIST.map((eq) => ({ equipmentId: eq.id, status: 'ok', quantity: eq.defaultQuantity })),
   },
 ];
