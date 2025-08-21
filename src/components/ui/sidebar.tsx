@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
@@ -176,6 +176,15 @@ const Sidebar = React.forwardRef<
     ref
   ) => {
     const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+    const headerRef = React.useRef<HTMLDivElement>(null)
+
+    const childrenArray = React.Children.toArray(children)
+    const header = childrenArray.find(
+      (child) => (child as React.ReactElement).type === SidebarHeader
+    )
+    const otherChildren = childrenArray.filter(
+      (child) => (child as React.ReactElement).type !== SidebarHeader
+    )
 
     if (collapsible === "none") {
       return (
@@ -206,6 +215,9 @@ const Sidebar = React.forwardRef<
             }
             side={side}
           >
+             <SheetHeader className="p-0">
+               <SheetTitle className="sr-only">Sidebar Menu</SheetTitle>
+             </SheetHeader>
             <div className="flex h-full w-full flex-col">{children}</div>
           </SheetContent>
         </Sheet>
