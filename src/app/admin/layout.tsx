@@ -11,7 +11,6 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 import { BarChart2, Shield } from 'lucide-react';
-import { UserNav } from '@/components/shared/user-nav';
 import Link from 'next/link';
 
 export default function AdminLayout({
@@ -28,7 +27,6 @@ export default function AdminLayout({
             <div className="flex-1">
                <h1 className="text-lg font-semibold">לוח בקרה - מנהל</h1>
             </div>
-            <UserNav />
           </header>
           <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-background/80">
             {children}

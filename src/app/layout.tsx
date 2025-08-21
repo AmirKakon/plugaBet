@@ -15,7 +15,6 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 import { ClipboardList, Shield } from 'lucide-react';
-import { UserNav } from '@/components/shared/user-nav';
 import Link from 'next/link';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -49,7 +48,6 @@ export default function RootLayout({
                 <div className="flex-1">
                   {/* Optional: Add breadcrumbs or page title here */}
                 </div>
-                <UserNav />
               </header>
               <main className="flex-1 overflow-y-auto p-4 md:p-8">
                 {children}
