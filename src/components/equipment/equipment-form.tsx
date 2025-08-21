@@ -41,6 +41,7 @@ const equipmentStatusSchema = z.object({
 });
 
 const formSchema = z.object({
+  task: z.string({ required_error: "יש לבחור משימה" }),
   firstName: z.string().min(2, { message: "שם פרטי הוא שדה חובה" }),
   lastName: z.string().min(2, { message: "שם משפחה הוא שדה חובה" }),
   soldierId: z.string().regex(/^[0-9]{7}$/, { message: "מספר אישי לא תקין" }),
@@ -94,11 +95,11 @@ export function EquipmentForm() {
   const selectedTaskId = form.watch("task");
 
   useEffect(() => {
-    if (selectedTaskId) {
-      const selectedTask = tasks.find(t => t.id === selectedTaskId);
+    if (selectedTaskId && step === 2) { // Only populate equipmentStatus when moving to step 2
+      const selectedTask = tasks.find(t => t.name === selectedTaskId);
       if (selectedTask) {
-        const newEquipmentStatus = selectedTask.items.map(item => ({
-          equipmentId: item.id,
+        const newEquipmentStatus = selectedTask.items.map((item, index) => ({
+          equipmentId: index,
           name: item.name,
           quantity: item.quantity ?? 0,
           status: "ok" as const,
@@ -117,7 +118,11 @@ export function EquipmentForm() {
   async function handleNextStep() {
     let isValid = false;
     if (step === 1) {
-      isValid = await form.trigger("task");
+      // In step 1, validation is handled by selecting a task button
+      // If a task is selected (form.watch("task") is not empty), consider it valid for moving to step 2
+      if (form.watch("task")) {
+        isValid = true;
+      }
     } else if (step === 2) {
       isValid = await form.trigger(["firstName", "lastName", "soldierId"]);
     }
@@ -132,12 +137,10 @@ export function EquipmentForm() {
   async function onSubmit(values: EquipmentFormValues) {
     setIsSubmitting(true);
     try {
-        const selectedTask = tasks.find(t => t.id === values.task);
         const payload = {
             ...values,
-            task: selectedTask?.name, // Send task name instead of ID
             date: new Date().toISOString(),
-        };
+        }; // values now directly contains task name
 
         const response = await fetch(`${BACKEND_BASE_URL}/api/forms`, {
             method: 'POST',
@@ -190,19 +193,19 @@ export function EquipmentForm() {
                     <p className="text-sm text-muted-foreground">בחר את המשימה שעבורה אתה חותם על ציוד.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- {tasks.map(task => (
- <Button
- key={task.id}
- type="button"
- variant={form.watch("task") === task.id ? "default" : "outline"}
- className="p-8 text-xl h-auto"
- onClick={() => {
- form.setValue("task", task.id);
- handleNextStep();
- }}
- >
- {task.name}
-                    </Button>
+                    {tasks.map(task => (
+                        <Button
+                            key={task.id}
+                            type="button"
+                            variant={form.watch("task") === task.name ? "default" : "outline"}
+                            className="p-8 text-xl h-auto"
+                            onClick={() => {
+                                form.setValue("task", task.name); // Set task name in form state
+                                handleNextStep();
+                            }}
+                        >
+                            {task.name}
+                        </Button>
                     ))}
                 </div>
             </div>
@@ -273,7 +276,7 @@ export function EquipmentForm() {
                 </div>
                 <div className="space-y-6">
                 {fields.map((item, index) => (
-                    <Card key={item.id} className="p-4">
+                    <Card key={index} className="p-4">
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                             <div className="md:col-span-2">
                                 <h4 className="font-bold text-lg">{item.name}</h4>
