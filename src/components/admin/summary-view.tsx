@@ -54,7 +54,7 @@ export function SummaryView() {
 
 
   return (
-    <div className="grid gap-8 lg:grid-cols-5">
+    <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-5">
       <Card className="lg:col-span-3">
         <CardHeader>
           <CardTitle>דוחות אחרונים</CardTitle>
@@ -65,9 +65,9 @@ export function SummaryView() {
             <TableHeader>
               <TableRow>
                 <TableHead>שם חייל</TableHead>
-                <TableHead>מ"א</TableHead>
+                <TableHead className="hidden md:table-cell">מ"א</TableHead>
                 <TableHead>משימה</TableHead>
-                <TableHead>תאריך</TableHead>
+                <TableHead className="hidden sm:table-cell">תאריך</TableHead>
                 <TableHead className="text-left">סטטוס</TableHead>
               </TableRow>
             </TableHeader>
@@ -77,9 +77,9 @@ export function SummaryView() {
                 return (
                   <TableRow key={submission.id}>
                     <TableCell className="font-medium">{`${submission.firstName} ${submission.lastName}`}</TableCell>
-                    <TableCell>{submission.soldierId}</TableCell>
+                    <TableCell className="hidden md:table-cell">{submission.soldierId}</TableCell>
                     <TableCell>{submission.task}</TableCell>
-                    <TableCell>{format(submission.date, 'dd/MM/yyyy HH:mm')}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{format(submission.date, 'dd/MM/yyyy HH:mm')}</TableCell>
                     <TableCell className="text-left">
                       <Badge variant={status.variant}>{status.text}</Badge>
                     </TableCell>

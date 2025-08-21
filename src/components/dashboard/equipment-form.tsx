@@ -159,7 +159,7 @@ export function EquipmentForm() {
               <h3 className="text-lg font-medium">שלב 2: פרטים אישיים</h3>
               <p className="text-sm text-muted-foreground">נא למלא את פרטי החייל/ת המקבל/ת את המשמרת.</p>
             </div>
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <FormField
                 control={form.control}
                 name="firstName"
@@ -247,7 +247,7 @@ export function EquipmentForm() {
                       </div>
                    </div>
 
-                    <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                        <FormField
                           control={form.control}
                           name={`equipment.${index}.quantity`}
@@ -270,7 +270,7 @@ export function EquipmentForm() {
                           control={form.control}
                           name={`equipment.${index}.comment`}
                           render={({ field: commentField }) => (
-                            <FormItem>
+                            <FormItem className="md:col-span-1">
                               <FormLabel>פירוט התקלה</FormLabel>
                               <FormControl>
                                 <Textarea placeholder="פרט את הבעיה..." {...commentField} />
