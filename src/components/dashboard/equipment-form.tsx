@@ -95,7 +95,7 @@ export function EquipmentForm() {
         status: "ok" as const,
         quantity: eq.quantity ?? 0,
         comment: "",
-        physicalId: eq.physicalId || "",
+        physicalId: "",
         hasPhysicalId: !!eq.physicalId,
       }));
       form.setValue('equipment', equipmentData);
@@ -315,7 +315,7 @@ export function EquipmentForm() {
                           )}
                         />
 
-                      {equipmentItem?.physicalId !== undefined && (
+                      {field.hasPhysicalId && (
                          <FormField
                           control={form.control}
                           name={`equipment.${index}.physicalId`}
