@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +19,7 @@ import { Switch } from "@/components/ui/switch";
 import { BACKEND_BASE_URL } from "@/lib/constants";
 import { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle, Loader2 } from "lucide-react";
+import { CheckCircle, Loader2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -30,6 +31,7 @@ const formSchema = z.object({
 });
 
 export function AttendanceForm() {
+  const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const { toast } = useToast();
@@ -43,6 +45,13 @@ export function AttendanceForm() {
       sleepingOnBase: false,
     },
   });
+
+  async function handleNextStep() {
+    const isValid = await form.trigger(["firstName", "lastName", "soldierId"]);
+    if (isValid) {
+      setStep(2);
+    }
+  }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -82,6 +91,7 @@ export function AttendanceForm() {
         </AlertDescription>
          <Button onClick={() => {
            setIsSuccess(false);
+           setStep(1);
            form.reset();
          }} variant="outline" className="mt-4">
           דיווח חדש
@@ -93,72 +103,96 @@ export function AttendanceForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" noValidate>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <FormField
-            control={form.control}
-            name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>שם פרטי</FormLabel>
-                <FormControl>
-                  <Input placeholder="ישראל" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>שם משפחה</FormLabel>
-                <FormControl>
-                  <Input placeholder="ישראלי" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="soldierId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>מספר אישי</FormLabel>
-              <FormControl>
-                <Input placeholder="1234567" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="sleepingOnBase"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-              <div className="space-y-0.5">
-                <FormLabel className="text-base">
-                  נשאר/ת ללינה בבסיס?
-                </FormLabel>
-                <FormDescription>
-                  סמן אם אתה מתכנן לישון בבסיס הלילה.
-                </FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
+        {step === 1 && (
+            <div className="space-y-8">
+                <div>
+                    <h3 className="text-lg font-medium">שלב 1: פרטים אישיים</h3>
+                    <p className="text-sm text-muted-foreground">נא למלא את פרטי החייל/ת המדווח/ת.</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <FormField
+                        control={form.control}
+                        name="firstName"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>שם פרטי</FormLabel>
+                            <FormControl>
+                            <Input placeholder="ישראל" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="lastName"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>שם משפחה</FormLabel>
+                            <FormControl>
+                            <Input placeholder="ישראלי" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                </div>
+                <FormField
+                    control={form.control}
+                    name="soldierId"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>מספר אישי</FormLabel>
+                        <FormControl>
+                            <Input placeholder="1234567" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
                 />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <button type="submit" disabled={isSubmitting} className={cn(buttonVariants({ size: "lg" }))}>
-          {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח דיווח"}
-        </button>
+                <Button onClick={handleNextStep} size="lg">הבא</Button>
+            </div>
+        )}
+
+        {step === 2 && (
+            <div className="space-y-8">
+                <div>
+                    <h3 className="text-lg font-medium">שלב 2: דיווח לינה</h3>
+                    <p className="text-sm text-muted-foreground">נא לסמן אם את/ה נשאר/ת ללינה בבסיס.</p>
+                </div>
+                <FormField
+                control={form.control}
+                name="sleepingOnBase"
+                render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                        <FormLabel className="text-base">
+                        נשאר/ת ללינה בבסיס?
+                        </FormLabel>
+                        <FormDescription>
+                        סמן אם אתה מתכנן לישון בבסיס הלילה.
+                        </FormDescription>
+                    </div>
+                    <FormControl>
+                        <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        />
+                    </FormControl>
+                    </FormItem>
+                )}
+                />
+                <div className="flex gap-4">
+                    <Button type="button" onClick={() => setStep(1)} variant="outline">
+                        <ArrowRight className="mr-2 h-4 w-4" />
+                        חזור
+                    </Button>
+                    <button type="submit" disabled={isSubmitting} className={cn(buttonVariants({ size: "lg" }))}>
+                        {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח דיווח"}
+                    </button>
+                </div>
+            </div>
+        )}
       </form>
     </Form>
   );
