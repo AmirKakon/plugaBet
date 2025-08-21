@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { ClipboardList, Shield } from 'lucide-react';
+import { ClipboardList, Shield, Home } from 'lucide-react';
 
 export function MainSidebar() {
   const { setOpenMobile } = useSidebar();
@@ -34,6 +34,18 @@ export function MainSidebar() {
               <Link href="/">
                 <ClipboardList />
                 <span>טופס ציוד</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              tooltip={{ children: 'דיווח נוכחות', side: 'left' }}
+              onClick={() => setOpenMobile(false)}
+            >
+              <Link href="/attendance">
+                <Home />
+                <span>דיווח נוכחות</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
