@@ -12,14 +12,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"; 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -27,17 +19,19 @@ import { BACKEND_BASE_URL } from "@/lib/constants";
 import { useEffect, useState } from "react";
 import type { Task } from "@/lib/types";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle, Loader2, ArrowRight, ArrowLeft } from "lucide-react";
+import { CheckCircle, Loader2, ArrowRight, X, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 
 const equipmentStatusSchema = z.object({
+  equipmentId: z.number(),
   name: z.string(),
   quantity: z.number(),
-  status: z.enum(["ok", "issue"], { required_error: "יש לבחור סטטוס" }),
+  status: z.enum(["exists", "missing"], { required_error: "יש לבחור סטטוס" }),
   comment: z.string().optional(),
-  physicalId: z.string().optional()
+  physicalId: z.string().optional(),
+  hasPhysicalId: z.boolean(),
 });
 
 const formSchema = z.object({
@@ -92,36 +86,38 @@ export function EquipmentForm() {
     fetchTasks();
   }, [toast]);
   
-  const selectedTaskId = form.watch("task");
+  const selectedTaskName = form.watch("task");
 
   useEffect(() => {
-    if (selectedTaskId && step === 2) { // Only populate equipmentStatus when moving to step 2
-      const selectedTask = tasks.find(t => t.name === selectedTaskId);
+    if (selectedTaskName) {
+      const selectedTask = tasks.find(t => t.name === selectedTaskName);
       if (selectedTask) {
         const newEquipmentStatus = selectedTask.items.map((item, index) => ({
           equipmentId: index,
           name: item.name,
           quantity: item.quantity ?? 0,
-          status: "ok" as const,
+          status: "exists" as const,
           comment: "",
           physicalId: "",
-          hasPhysicalId: item.physicalId,
+          hasPhysicalId: item.physicalId ?? false,
         }));
         replace(newEquipmentStatus);
       }
     } else {
         replace([]);
     }
-  }, [selectedTaskId, tasks, replace]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTaskName, tasks, replace]);
 
 
   async function handleNextStep() {
     let isValid = false;
     if (step === 1) {
-      // In step 1, validation is handled by selecting a task button
-      // If a task is selected (form.watch("task") is not empty), consider it valid for moving to step 2
       if (form.watch("task")) {
         isValid = true;
+      } else {
+        toast({ title: "שגיאה", description: "יש לבחור משימה", variant: "destructive" });
+        return;
       }
     } else if (step === 2) {
       isValid = await form.trigger(["firstName", "lastName", "soldierId"]);
@@ -140,7 +136,7 @@ export function EquipmentForm() {
         const payload = {
             ...values,
             date: new Date().toISOString(),
-        }; // values now directly contains task name
+        };
 
         const response = await fetch(`${BACKEND_BASE_URL}/api/forms`, {
             method: 'POST',
@@ -200,14 +196,14 @@ export function EquipmentForm() {
                             variant={form.watch("task") === task.name ? "default" : "outline"}
                             className="p-8 text-xl h-auto"
                             onClick={() => {
-                                form.setValue("task", task.name); // Set task name in form state
-                                handleNextStep();
+                                form.setValue("task", task.name);
                             }}
                         >
                             {task.name}
                         </Button>
                     ))}
                 </div>
+                <Button onClick={handleNextStep} size="lg" type="button">הבא</Button>
             </div>
         )}
 
@@ -276,7 +272,7 @@ export function EquipmentForm() {
                 </div>
                 <div className="space-y-6">
                 {fields.map((item, index) => (
-                    <Card key={index} className="p-4">
+                    <Card key={item.id} className="p-4">
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                             <div className="md:col-span-2">
                                 <h4 className="font-bold text-lg">{item.name}</h4>
@@ -289,24 +285,26 @@ export function EquipmentForm() {
                                 <FormItem className="space-y-3">
                                     <FormLabel>סטטוס</FormLabel>
                                     <FormControl>
-                                    <RadioGroup
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        className="flex gap-4"
-                                    >
-                                        <FormItem className="flex items-center space-x-2 space-x-reverse">
-                                        <FormControl>
-                                            <RadioGroupItem value="ok" />
-                                        </FormControl>
-                                        <FormLabel className="font-normal">תקין</FormLabel>
-                                        </FormItem>
-                                        <FormItem className="flex items-center space-x-2 space-x-reverse">
-                                        <FormControl>
-                                            <RadioGroupItem value="issue" />
-                                        </FormControl>
-                                        <FormLabel className="font-normal">תקול</FormLabel>
-                                        </FormItem>
-                                    </RadioGroup>
+                                        <div className="flex gap-2">
+                                            <Button 
+                                                type="button" 
+                                                variant={field.value === 'exists' ? 'default' : 'outline'}
+                                                onClick={() => field.onChange('exists')}
+                                                className="w-full"
+                                            >
+                                                <Check className="ml-2 h-4 w-4" />
+                                                קיים
+                                            </Button>
+                                            <Button 
+                                                type="button" 
+                                                variant={field.value === 'missing' ? 'destructive' : 'outline'}
+                                                onClick={() => field.onChange('missing')}
+                                                 className="w-full"
+                                           >
+                                                <X className="ml-2 h-4 w-4" />
+                                                חסר
+                                            </Button>
+                                        </div>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -346,16 +344,16 @@ export function EquipmentForm() {
                                 />
                             )}
                             
-                            {form.watch(`equipmentStatus.${index}.status`) === 'issue' && (
+                            {form.watch(`equipmentStatus.${index}.status`) === 'missing' && (
                                 <div className="md:col-span-2">
                                 <FormField
                                     control={form.control}
                                     name={`equipmentStatus.${index}.comment`}
                                     render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>פירוט התקלה</FormLabel>
+                                        <FormLabel>פירוט החוסר</FormLabel>
                                         <FormControl>
-                                        <Textarea placeholder="פרט את התקלה כאן" {...field} />
+                                        <Textarea placeholder="פרט את החוסר כאן" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
