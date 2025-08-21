@@ -21,6 +21,7 @@ import { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle, Loader2, Check, X, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const equipmentStatusSchema = z.object({
   equipmentId: z.string(),
