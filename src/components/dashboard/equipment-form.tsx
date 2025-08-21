@@ -30,9 +30,14 @@ const equipmentStatusSchema = z.object({
   status: z.enum(["ok", "issue"]),
   quantity: z.number().min(0, { message: "כמות חייבת להיות מספר חיובי" }),
   comment: z.string().optional(),
+  physicalId: z.string().optional(),
+  hasPhysicalId: z.boolean(),
 }).refine(data => data.status === 'ok' || (data.status === 'issue' && data.comment && data.comment.length > 0), {
   message: "יש למלא הערה במקרה של תקלה",
   path: ["comment"],
+}).refine(data => !data.hasPhysicalId || (data.hasPhysicalId && data.physicalId && data.physicalId.length > 0), {
+  message: "יש למלא מספר זיהוי",
+  path: ["physicalId"],
 });
 
 const formSchema = z.object({
@@ -90,6 +95,8 @@ export function EquipmentForm() {
         status: "ok" as const,
         quantity: eq.quantity ?? 0,
         comment: "",
+        physicalId: eq.physicalId || "",
+        hasPhysicalId: !!eq.physicalId,
       }));
       form.setValue('equipment', equipmentData);
     }
@@ -172,7 +179,7 @@ export function EquipmentForm() {
                              <Button
                                 key={task.id}
                                 type="button"
-                                variant={field.value === task.name ? "accent" : "outline"}
+                                variant={field.value === task.name ? "default" : "outline"}
                                 className="p-8 text-xl h-auto"
                                 onClick={() => {
                                   field.onChange(task.name);
@@ -256,13 +263,15 @@ export function EquipmentForm() {
               <p className="text-sm text-muted-foreground">נא לוודא את תקינות וכמות כלל הציוד הרשום.</p>
             </div>
             <div className="space-y-6">
-              {fields.map((field, index) => (
+              {fields.map((field, index) => {
+                const equipmentItem = selectedTask.items.find(eq => eq.id === field.equipmentId);
+                return (
                 <div key={field.id} className="p-4 border rounded-lg bg-card/50">
                    <div className="flex justify-between items-start">
                       <div>
                         <FormLabel className="text-base">{field.name}</FormLabel>
                         <FormDescription>
-                          {selectedTask.items.find(eq => eq.id === field.equipmentId)?.description}
+                          {equipmentItem?.description}
                         </FormDescription>
                       </div>
                        <div className="flex items-center gap-2">
@@ -305,12 +314,32 @@ export function EquipmentForm() {
                             </FormItem>
                           )}
                         />
+
+                      {equipmentItem?.physicalId !== undefined && (
+                         <FormField
+                          control={form.control}
+                          name={`equipment.${index}.physicalId`}
+                          render={({ field: physicalIdField }) => (
+                            <FormItem>
+                              <FormLabel>מספר זיהוי</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder="הזן מספר זיהוי"
+                                  {...physicalIdField}
+                                  />
+                              </FormControl>
+                               <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+
                       {form.watch(`equipment.${index}.status`) === 'issue' && (
                         <FormField
                           control={form.control}
                           name={`equipment.${index}.comment`}
                           render={({ field: commentField }) => (
-                            <FormItem className="md:col-span-1">
+                            <FormItem className="md:col-span-2">
                               <FormLabel>פירוט התקלה</FormLabel>
                               <FormControl>
                                 <Textarea placeholder="פרט את הבעיה..." {...commentField} />
@@ -322,7 +351,7 @@ export function EquipmentForm() {
                       )}
                     </div>
                 </div>
-              ))}
+              )})}
             </div>
 
             <Separator />

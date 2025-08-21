@@ -3,7 +3,7 @@ export const BACKEND_BASE_URL = 'https://us-central1-pluga-bet.cloudfunctions.ne
 import type { Submission, Equipment } from './types';
 
 export const EQUIPMENT_LIST: Equipment[] = [
-  { id: 'vehicle', name: 'רכב האמר M1151', description: 'בדיקה כללית, דלק, שמן, מים.', quantity: 1 },
+  { id: 'vehicle', name: 'רכב האמר M1151', description: 'בדיקה כללית, דלק, שמן, מים.', quantity: 1, physicalId: 'צ-123456' },
   { id: 'radio_prc', name: 'קשר AN/PRC-152', description: 'סוללה, אנטנה, תקינות כללית.', quantity: 2 },
   { id: 'radio_vhf', name: 'קשר VHF', description: 'בדיקת תדרים וסוללה.', quantity: 2 },
   { id: 'nvg', name: 'אמצעי ראיית לילה', description: 'תקינות, סוללות, כיסויים.', quantity: 4 },
@@ -22,7 +22,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     soldierId: '1234567',
     date: new Date('2024-08-20T10:00:00Z'),
     equipmentStatus: [
-      { equipmentId: 'vehicle', status: 'ok', quantity: 1 },
+      { equipmentId: 'vehicle', status: 'ok', quantity: 1, physicalId: 'צ-123456' },
       { equipmentId: 'radio_prc', status: 'ok', quantity: 2 },
       { equipmentId: 'radio_vhf', status: 'issue', comment: 'סוללה חלשה', quantity: 1 },
       { equipmentId: 'nvg', status: 'ok', quantity: 4 },
@@ -37,7 +37,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     lastName: 'לוי',
     soldierId: '7654321',
     date: new Date('2024-08-21T08:00:00Z'),
-    equipmentStatus: EQUIPMENT_LIST.map((eq) => ({ equipmentId: eq.id, status: 'ok', quantity: eq.quantity })),
+    equipmentStatus: EQUIPMENT_LIST.map((eq) => ({ equipmentId: eq.id, status: 'ok', quantity: eq.quantity, physicalId: eq.physicalId })),
   },
   {
     id: 'sub3',
@@ -47,7 +47,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     soldierId: '1122334',
     date: new Date('2024-08-21T12:30:00Z'),
     equipmentStatus: [
-      { equipmentId: 'vehicle', status: 'issue', comment: 'צמיג קדמי ימני נראה נמוך', quantity: 1 },
+      { equipmentId: 'vehicle', status: 'issue', comment: 'צמיג קדמי ימני נראה נמוך', quantity: 1, physicalId: 'צ-123456' },
       { equipmentId: 'radio_prc', status: 'ok', quantity: 2 },
       { equipmentId: 'radio_vhf', status: 'ok', quantity: 2 },
       { equipmentId: 'nvg', status: 'ok', quantity: 4 },
@@ -62,6 +62,6 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     lastName: 'שחר',
     soldierId: '4455667',
     date: new Date('2024-08-19T18:00:00Z'),
-    equipmentStatus: EQUIPMENT_LIST.map((eq) => ({ equipmentId: eq.id, status: 'ok', quantity: eq.quantity })),
+    equipmentStatus: EQUIPMENT_LIST.map((eq) => ({ equipmentId: eq.id, status: 'ok', quantity: eq.quantity, physicalId: eq.physicalId })),
   },
 ];

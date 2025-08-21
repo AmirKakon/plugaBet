@@ -3,6 +3,7 @@ export type Equipment = {
   name: string;
   description: string;
   quantity: number;
+  physicalId?: string;
 };
 
 export type EquipmentStatus = {
@@ -10,6 +11,7 @@ export type EquipmentStatus = {
   status: 'ok' | 'issue';
   quantity: number;
   comment?: string;
+  physicalId?: string;
 };
 
 export type Submission = {
