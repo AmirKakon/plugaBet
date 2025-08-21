@@ -36,7 +36,7 @@ const equipmentStatusSchema = z.object({
   message: "יש למלא הערה במקרה של תקלה",
   path: ["comment"],
 }).refine(data => !data.hasPhysicalId || (data.hasPhysicalId && data.physicalId && data.physicalId.length > 0), {
-  message: "יש למלא מספר זיהוי",
+  message: "יש למלא צ'",
   path: ["physicalId"],
 });
 
@@ -321,10 +321,10 @@ export function EquipmentForm() {
                           name={`equipment.${index}.physicalId`}
                           render={({ field: physicalIdField }) => (
                             <FormItem>
-                              <FormLabel>מספר זיהוי</FormLabel>
+                              <FormLabel>צ'</FormLabel>
                               <FormControl>
                                 <Input 
-                                  placeholder="הזן מספר זיהוי"
+                                  placeholder="הזן צ'"
                                   {...physicalIdField}
                                   />
                               </FormControl>
