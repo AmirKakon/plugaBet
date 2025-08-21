@@ -33,31 +33,18 @@ import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 
 const equipmentStatusSchema = z.object({
-  equipmentId: z.string(),
   name: z.string(),
   quantity: z.number(),
   status: z.enum(["ok", "issue"], { required_error: "יש לבחור סטטוס" }),
   comment: z.string().optional(),
-  physicalId: z.string().optional(),
-  hasPhysicalId: z.boolean(),
+  physicalId: z.string().optional()
 });
 
 const formSchema = z.object({
-  task: z.string({ required_error: "יש לבחור משימה" }),
   firstName: z.string().min(2, { message: "שם פרטי הוא שדה חובה" }),
   lastName: z.string().min(2, { message: "שם משפחה הוא שדה חובה" }),
   soldierId: z.string().regex(/^[0-9]{7}$/, { message: "מספר אישי לא תקין" }),
   equipmentStatus: z.array(equipmentStatusSchema),
-}).refine(data => {
-    for (const item of data.equipmentStatus) {
-        if (item.hasPhysicalId && (!item.physicalId || item.physicalId.trim() === '')) {
-            return false;
-        }
-    }
-    return true;
-}, {
-    message: "יש למלא צ' עבור כל הפריטים הנדרשים",
-    path: ["equipmentStatus"]
 });
 
 type EquipmentFormValues = z.infer<typeof formSchema>;
@@ -116,8 +103,7 @@ export function EquipmentForm() {
           quantity: item.quantity,
           status: "ok" as const,
           comment: "",
-          physicalId: "",
-          hasPhysicalId: !!item.physicalId,
+          physicalId: ""
         }));
         replace(newEquipmentStatus);
       }
@@ -128,16 +114,7 @@ export function EquipmentForm() {
 
 
   async function handleNextStep() {
-    let isValid = false;
-    if (step === 1) {
-        isValid = await form.trigger(["task"]);
-    } else if (step === 2) {
-        isValid = await form.trigger(["firstName", "lastName", "soldierId"]);
-    }
-
-    if (isValid) {
-      setStep(s => s + 1);
-    }
+    setStep(s => s + 1);
   }
 
   async function onSubmit(values: EquipmentFormValues) {
