@@ -353,7 +353,7 @@ export function EquipmentForm() {
                 <ArrowRight className="mr-2 h-4 w-4" />
                 חזור
               </Button>
-              <Button type="submit" disabled={isSubmitting} variant="accent" size="lg">
+              <Button type="submit" disabled={isSubmitting} variant="default" size="lg" className="hover:bg-primary/80">
                 {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח וחתום"}
               </Button>
             </div>
