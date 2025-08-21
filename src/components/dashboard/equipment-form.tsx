@@ -122,6 +122,7 @@ export function EquipmentForm() {
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("onSubmit triggered");
     setIsSubmitting(true);
     try {
       const response = await fetch(`${BACKEND_BASE_URL}/api/forms`, {
@@ -178,7 +179,11 @@ export function EquipmentForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit((values) => {
+        console.log("Inline form onSubmit triggered");
+        console.log("handleSubmit called");
+        onSubmit(values);
+      })} className="space-y-8">
         {step === 1 && (
            <div className="space-y-8">
              <div>
@@ -402,9 +407,9 @@ export function EquipmentForm() {
                 <ArrowRight className="mr-2 h-4 w-4" />
                 חזור
               </Button>
-              <Button type="submit" disabled={isSubmitting} variant="default" size="lg" className="hover:bg-primary/80">
+              <Button type="submit" disabled={isSubmitting} variant="default" size="lg">
                 {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח"}
-              </Button>
+ </Button>
             </div>
           </div>
         )}
