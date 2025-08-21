@@ -1,20 +1,12 @@
 import type React from 'react';
 import {
   SidebarProvider,
-  Sidebar,
-  SidebarHeader,
-  SidebarContent,
-  SidebarTrigger,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
   SidebarInset,
+  SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { BarChart2, Shield, Home } from 'lucide-react';
-import Link from 'next/link';
 import { MainSidebar } from '@/components/layout/main-sidebar';
 
-export default function AdminLayout({
+export default function AttendanceLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -26,10 +18,10 @@ export default function AdminLayout({
           <header className="flex h-14 items-center gap-4 border-b bg-card px-6 sticky top-0 z-30">
             <SidebarTrigger className="md:hidden" />
             <div className="flex-1">
-               <h1 className="text-lg font-semibold">לוח בקרה - מנהל</h1>
+              <h1 className="text-lg font-semibold">דיווח נוכחות</h1>
             </div>
           </header>
-          <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-background/80">
+          <main className="flex-1 overflow-y-auto p-4 md:p-8">
             {children}
           </main>
         </SidebarInset>
