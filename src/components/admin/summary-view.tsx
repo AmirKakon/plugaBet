@@ -65,7 +65,7 @@ export function SummaryView() {
             <TableHeader>
               <TableRow>
                 <TableHead>שם חייל</TableHead>
-                <TableHead>דרגה</TableHead>
+                <TableHead>מ"א</TableHead>
                 <TableHead>תאריך</TableHead>
                 <TableHead className="text-right">סטטוס</TableHead>
               </TableRow>
@@ -75,8 +75,8 @@ export function SummaryView() {
                 const status = getSubmissionStatus(submission);
                 return (
                   <TableRow key={submission.id}>
-                    <TableCell className="font-medium">{submission.soldierName}</TableCell>
-                    <TableCell>{submission.rank}</TableCell>
+                    <TableCell className="font-medium">{`${submission.firstName} ${submission.lastName}`}</TableCell>
+                    <TableCell>{submission.soldierId}</TableCell>
                     <TableCell>{format(submission.date, 'dd/MM/yyyy HH:mm')}</TableCell>
                     <TableCell className="text-right">
                       <Badge variant={status.variant}>{status.text}</Badge>

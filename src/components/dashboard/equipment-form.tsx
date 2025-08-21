@@ -14,34 +14,29 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import { EQUIPMENT_LIST, RANKS } from "@/lib/constants";
+import { EQUIPMENT_LIST } from "@/lib/constants";
 import { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle, Loader2 } from "lucide-react";
+import { CheckCircle, Loader2, Check, X, ArrowLeft } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const equipmentStatusSchema = z.object({
   equipmentId: z.string(),
   name: z.string(),
-  isOk: z.boolean(),
+  status: z.enum(["ok", "issue"]),
+  quantity: z.number().min(0, { message: "כמות חייבת להיות מספר חיובי" }),
   comment: z.string().optional(),
-}).refine(data => data.isOk || (!data.isOk && data.comment && data.comment.length > 0), {
+}).refine(data => data.status === 'ok' || (data.status === 'issue' && data.comment && data.comment.length > 0), {
   message: "יש למלא הערה במקרה של תקלה",
   path: ["comment"],
 });
 
 const formSchema = z.object({
-  soldierName: z.string().min(2, { message: "שם הוא שדה חובה" }),
-  rank: z.string({ required_error: "דרגה היא שדה חובה" }),
+  firstName: z.string().min(2, { message: "שם פרטי הוא שדה חובה" }),
+  lastName: z.string().min(2, { message: "שם משפחה הוא שדה חובה" }),
+  soldierId: z.string().regex(/^[0-9]{7}$/, { message: "מספר אישי לא תקין" }),
   equipment: z.array(equipmentStatusSchema),
   confirmation: z.literal(true, {
     errorMap: () => ({ message: "יש לאשר את ההצהרה" }),
@@ -49,22 +44,38 @@ const formSchema = z.object({
 });
 
 export function EquipmentForm() {
+  const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      soldierName: "",
-      equipment: EQUIPMENT_LIST.map(eq => ({ equipmentId: eq.id, name: eq.name, isOk: true, comment: "" })),
+      firstName: "",
+      lastName: "",
+      soldierId: "",
+      equipment: EQUIPMENT_LIST.map(eq => ({ 
+        equipmentId: eq.id, 
+        name: eq.name, 
+        status: "ok", 
+        quantity: eq.defaultQuantity, 
+        comment: "" 
+      })),
       confirmation: false,
     },
   });
 
-  const { fields } = useFieldArray({
+  const { fields, update } = useFieldArray({
     control: form.control,
     name: "equipment",
   });
+
+  async function handleNextStep() {
+    const isValid = await form.trigger(["firstName", "lastName", "soldierId"]);
+    if (isValid) {
+      setStep(2);
+    }
+  }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -72,7 +83,7 @@ export function EquipmentForm() {
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
-      form.reset();
+      // form.reset(); // Don't reset, so we can show the success message
     }, 1500);
   }
 
@@ -82,9 +93,13 @@ export function EquipmentForm() {
         <CheckCircle className="h-4 w-4 !text-green-500" />
         <AlertTitle>הטופס נשלח בהצלחה!</AlertTitle>
         <AlertDescription>
-          העברת המשמרת תועדה במערכת. ניתן לסגור חלון זה.
+          העברת המשמרת תועדה במערכת. תודה {form.getValues('firstName')}.
         </AlertDescription>
-         <Button onClick={() => setIsSuccess(false)} variant="outline" className="mt-4">
+         <Button onClick={() => {
+           setIsSuccess(false);
+           setStep(1);
+           form.reset();
+         }} variant="outline" className="mt-4">
           מילוי טופס חדש
         </Button>
       </Alert>
@@ -94,124 +109,166 @@ export function EquipmentForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="grid md:grid-cols-2 gap-8">
-          <FormField
-            control={form.control}
-            name="soldierName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>שם מלא</FormLabel>
-                <FormControl>
-                  <Input placeholder="ישראל ישראלי" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="rank"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>דרגה</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="בחר דרגה" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {RANKS.map(rank => (
-                      <SelectItem key={rank} value={rank}>{rank}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <Separator />
-
-        <div>
-          <h3 className="text-lg font-medium mb-4">בדיקת ציוד</h3>
-          <div className="space-y-6">
-            {fields.map((field, index) => (
+        {step === 1 && (
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-lg font-medium">שלב 1: פרטים אישיים</h3>
+              <p className="text-sm text-muted-foreground">נא למלא את פרטי החייל/ת המקבל/ת את המשמרת.</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
               <FormField
-                key={field.id}
                 control={form.control}
-                name={`equipment.${index}`}
-                render={({ field: itemField }) => (
-                  <FormItem className="p-4 border rounded-lg bg-card/50">
-                    <FormLabel className="text-base">{itemField.value.name}</FormLabel>
-                    <FormDescription>
-                      {EQUIPMENT_LIST.find(eq => eq.id === itemField.value.equipmentId)?.description}
-                    </FormDescription>
-                    <div className="py-2">
-                       <FormField
-                        control={form.control}
-                        name={`equipment.${index}.isOk`}
-                        render={({ field: checkField }) => (
-                          <FormItem className="flex items-center gap-4">
-                            <FormLabel>האם תקין?</FormLabel>
-                            <FormControl>
-                               <Checkbox
-                                checked={checkField.value}
-                                onCheckedChange={checkField.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    {!form.watch(`equipment.${index}.isOk`) && (
-                      <FormField
-                        control={form.control}
-                        name={`equipment.${index}.comment`}
-                        render={({ field: commentField }) => (
-                          <FormItem className="mt-2">
-                            <FormLabel>פירוט התקלה</FormLabel>
-                            <FormControl>
-                              <Textarea placeholder="פרט את הבעיה..." {...commentField} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>שם פרטי</FormLabel>
+                    <FormControl>
+                      <Input placeholder="ישראל" {...field} />
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
-            ))}
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>שם משפחה</FormLabel>
+                    <FormControl>
+                      <Input placeholder="ישראלי" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+             <FormField
+                control={form.control}
+                name="soldierId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>מספר אישי</FormLabel>
+                    <FormControl>
+                      <Input placeholder="1234567" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            <Button onClick={handleNextStep} size="lg">הבא</Button>
           </div>
-        </div>
+        )}
 
-        <Separator />
+        {step === 2 && (
+          <div className="space-y-8">
+             <div>
+              <h3 className="text-lg font-medium">שלב 2: בדיקת ציוד</h3>
+              <p className="text-sm text-muted-foreground">נא לוודא את תקינות וכמות כלל הציוד הרשום.</p>
+            </div>
+            <div className="space-y-6">
+              {fields.map((field, index) => (
+                <div key={field.id} className="p-4 border rounded-lg bg-card/50">
+                   <div className="flex justify-between items-start">
+                      <div>
+                        <FormLabel className="text-base">{field.name}</FormLabel>
+                        <FormDescription>
+                          {EQUIPMENT_LIST.find(eq => eq.id === field.equipmentId)?.description}
+                        </FormDescription>
+                      </div>
+                       <div className="flex items-center gap-2">
+                          <Button
+                            type="button"
+                            variant={form.watch(`equipment.${index}.status`) === 'ok' ? 'secondary' : 'ghost'}
+                            size="icon"
+                            className={cn("h-8 w-8", form.watch(`equipment.${index}.status`) === 'ok' && "border-2 border-green-500")}
+                            onClick={() => update(index, { ...form.getValues(`equipment.${index}`), status: 'ok' })}
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
+                           <Button
+                            type="button"
+                             variant={form.watch(`equipment.${index}.status`) === 'issue' ? 'destructive' : 'ghost'}
+                            size="icon"
+                             className="h-8 w-8"
+                            onClick={() => update(index, { ...form.getValues(`equipment.${index}`), status: 'issue' })}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                      </div>
+                   </div>
 
-        <FormField
-          control={form.control}
-          name="confirmation"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm" dir="rtl">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>
-                  אני, {form.watch('soldierName') || "החייל/ת"}, מאשר/ת כי בדקתי את כלל הציוד ומצאתי אותו במצב המתואר לעיל.
-                </FormLabel>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" disabled={isSubmitting} variant="accent" size="lg">
-          {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח וחתום"}
-        </Button>
+                    <div className="grid grid-cols-2 gap-4 mt-4">
+                       <FormField
+                          control={form.control}
+                          name={`equipment.${index}.quantity`}
+                          render={({ field: quantityField }) => (
+                            <FormItem>
+                              <FormLabel>כמות</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  {...quantityField}
+                                  onChange={e => quantityField.onChange(parseInt(e.target.value, 10) || 0)}
+                                  />
+                              </FormControl>
+                               <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      {form.watch(`equipment.${index}.status`) === 'issue' && (
+                        <FormField
+                          control={form.control}
+                          name={`equipment.${index}.comment`}
+                          render={({ field: commentField }) => (
+                            <FormItem>
+                              <FormLabel>פירוט התקלה</FormLabel>
+                              <FormControl>
+                                <Textarea placeholder="פרט את הבעיה..." {...commentField} />
+                              </FormControl>
+                               <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                    </div>
+                </div>
+              ))}
+            </div>
+
+            <Separator />
+
+            <FormField
+              control={form.control}
+              name="confirmation"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm" dir="rtl">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      אני, {form.watch('firstName') || "החייל/ת"}, מאשר/ת כי בדקתי את כלל הציוד ומצאתי אותו במצב המתואר לעיל.
+                    </FormLabel>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex gap-4">
+              <Button type="button" onClick={() => setStep(1)} variant="outline">
+                <ArrowLeft className="ml-2 h-4 w-4" />
+                חזור
+              </Button>
+              <Button type="submit" disabled={isSubmitting} variant="accent" size="lg">
+                {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח וחתום"}
+              </Button>
+            </div>
+          </div>
+        )}
       </form>
     </Form>
   );
