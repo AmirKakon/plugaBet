@@ -21,3 +21,9 @@ export type Submission = {
   date: Date;
   equipmentStatus: EquipmentStatus[];
 };
+
+export type Task = {
+    id: string;
+    name: string;
+    items: Equipment[];
+}

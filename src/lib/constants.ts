@@ -1,6 +1,8 @@
-import type { Submission } from './types';
+export const BACKEND_BASE_URL = 'https://us-central1-pluga-bet.cloudfunctions.net/app';
 
-export const EQUIPMENT_LIST = [
+import type { Submission, Equipment } from './types';
+
+export const EQUIPMENT_LIST: Equipment[] = [
   { id: 'vehicle', name: 'רכב האמר M1151', description: 'בדיקה כללית, דלק, שמן, מים.', defaultQuantity: 1 },
   { id: 'radio_prc', name: 'קשר AN/PRC-152', description: 'סוללה, אנטנה, תקינות כללית.', defaultQuantity: 2 },
   { id: 'radio_vhf', name: 'קשר VHF', description: 'בדיקת תדרים וסוללה.', defaultQuantity: 2 },
@@ -8,8 +10,6 @@ export const EQUIPMENT_LIST = [
   { id: 'first_aid', name: 'ערכת עזרה ראשונה', description: 'תכולה מלאה, תוקף פריטים.', defaultQuantity: 1 },
   { id: 'weapon', name: 'נשק אישי', description: 'נקי, משומן, תקין.', defaultQuantity: 4 },
 ];
-
-export const TASKS = ['סיור', 'כרמל', 'בין ברכיים'];
 
 export const RANKS = ['טוראי', 'רב"ט', 'סמל', 'סמ"ר', 'רס"ל'];
 

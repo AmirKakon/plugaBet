@@ -113,6 +113,7 @@ export function SummaryView() {
                 axisLine={false}
                 tickFormatter={(value) => value.slice(0, 15)}
                 reversed
+                width={80}
               />
               <XAxis dataKey="issues" type="number" hide />
               <ChartTooltip

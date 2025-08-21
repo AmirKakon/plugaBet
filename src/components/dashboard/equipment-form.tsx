@@ -16,12 +16,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import { EQUIPMENT_LIST, TASKS } from "@/lib/constants";
-import { useState } from "react";
+import { BACKEND_BASE_URL } from "@/lib/constants";
+import { useEffect, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle, Loader2, Check, X, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import type { Task, Equipment } from "@/lib/types";
 
 const equipmentStatusSchema = z.object({
   equipmentId: z.string(),
@@ -49,6 +50,9 @@ export function EquipmentForm() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isLoadingTasks, setIsLoadingTasks] = useState(true);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,16 +61,39 @@ export function EquipmentForm() {
       firstName: "",
       lastName: "",
       soldierId: "",
-      equipment: EQUIPMENT_LIST.map(eq => ({ 
-        equipmentId: eq.id, 
-        name: eq.name, 
-        status: "ok", 
-        quantity: eq.defaultQuantity, 
-        comment: "" 
-      })),
+      equipment: [],
       confirmation: false,
     },
   });
+  
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await fetch(`${BACKEND_BASE_URL}/api/tasks`);
+        const data = await response.json();
+        setTasks(data.tasks);
+      } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+      } finally {
+        setIsLoadingTasks(false);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  useEffect(() => {
+    if (selectedTask) {
+      const equipmentData = selectedTask.items.map((eq: Equipment) => ({
+        equipmentId: eq.id,
+        name: eq.name,
+        status: "ok" as const,
+        quantity: eq.defaultQuantity,
+        comment: "",
+      }));
+      form.setValue('equipment', equipmentData);
+    }
+  }, [selectedTask, form]);
 
   const { fields, update } = useFieldArray({
     control: form.control,
@@ -106,7 +133,15 @@ export function EquipmentForm() {
          <Button onClick={() => {
            setIsSuccess(false);
            setStep(1);
-           form.reset();
+           setSelectedTask(null);
+           form.reset({
+            task: "",
+            firstName: "",
+            lastName: "",
+            soldierId: "",
+            equipment: [],
+            confirmation: false,
+           });
          }} variant="outline" className="mt-4">
           מילוי טופס חדש
         </Button>
@@ -130,20 +165,25 @@ export function EquipmentForm() {
                   <FormItem className="space-y-3">
                     <FormControl>
                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {TASKS.map((task) => (
-                           <Button
-                              key={task}
-                              type="button"
-                              variant={field.value === task ? "accent" : "outline"}
-                              className="p-8 text-xl h-auto"
-                              onClick={() => {
-                                field.onChange(task);
-                                handleNextStep(1,2);
-                              }}
-                            >
-                              {task}
-                            </Button>
-                        ))}
+                        {isLoadingTasks ? (
+                          <Loader2 className="animate-spin" />
+                        ) : (
+                          tasks.map((task) => (
+                             <Button
+                                key={task.id}
+                                type="button"
+                                variant={field.value === task.name ? "accent" : "outline"}
+                                className="p-8 text-xl h-auto"
+                                onClick={() => {
+                                  field.onChange(task.name);
+                                  setSelectedTask(task);
+                                  handleNextStep(1,2);
+                                }}
+                              >
+                                {task.name}
+                              </Button>
+                          ))
+                        )}
                        </div>
                     </FormControl>
                     <FormMessage />
@@ -209,7 +249,7 @@ export function EquipmentForm() {
           </div>
         )}
 
-        {step === 3 && (
+        {step === 3 && selectedTask && (
           <div className="space-y-8">
              <div>
               <h3 className="text-lg font-medium">שלב 3: בדיקת ציוד</h3>
@@ -222,7 +262,7 @@ export function EquipmentForm() {
                       <div>
                         <FormLabel className="text-base">{field.name}</FormLabel>
                         <FormDescription>
-                          {EQUIPMENT_LIST.find(eq => eq.id === field.equipmentId)?.description}
+                          {selectedTask.items.find(eq => eq.id === field.equipmentId)?.description}
                         </FormDescription>
                       </div>
                        <div className="flex items-center gap-2">
