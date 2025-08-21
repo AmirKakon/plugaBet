@@ -20,6 +20,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { useEffect, useState } from "react";
 
 
 const chartConfig = {
@@ -30,6 +31,12 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function SummaryView() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const submissions = MOCK_SUBMISSIONS.sort((a, b) => b.date.getTime() - a.date.getTime());
 
   const getSubmissionStatus = (submission: Submission) => {
@@ -76,7 +83,7 @@ export function SummaryView() {
                     <TableCell className="font-medium">{`${submission.firstName} ${submission.lastName}`}</TableCell>
                     <TableCell className="hidden md:table-cell">{submission.soldierId}</TableCell>
                     <TableCell>{submission.task}</TableCell>
-                    <TableCell className="hidden sm:table-cell">{format(submission.date, 'dd/MM/yyyy HH:mm')}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{isClient ? format(submission.date, 'dd/MM/yyyy HH:mm') : ''}</TableCell>
                     <TableCell className="text-left">
                       <Badge variant={status.variant}>{status.text}</Badge>
                     </TableCell>
