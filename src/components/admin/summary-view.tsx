@@ -67,7 +67,7 @@ export function SummaryView() {
                 <TableHead>שם חייל</TableHead>
                 <TableHead>מ"א</TableHead>
                 <TableHead>תאריך</TableHead>
-                <TableHead className="text-right">סטטוס</TableHead>
+                <TableHead className="text-left">סטטוס</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -78,7 +78,7 @@ export function SummaryView() {
                     <TableCell className="font-medium">{`${submission.firstName} ${submission.lastName}`}</TableCell>
                     <TableCell>{submission.soldierId}</TableCell>
                     <TableCell>{format(submission.date, 'dd/MM/yyyy HH:mm')}</TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-left">
                       <Badge variant={status.variant}>{status.text}</Badge>
                     </TableCell>
                   </TableRow>
@@ -97,7 +97,7 @@ export function SummaryView() {
         <CardContent>
           {issueData.length > 0 ? (
           <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-            <BarChart accessibilityLayer data={issueData} layout="vertical" margin={{ left: 20, right: 20 }}>
+            <BarChart accessibilityLayer data={issueData} layout="vertical" margin={{ left: 0, right: 10 }}>
               <CartesianGrid horizontal={false} />
               <YAxis
                 dataKey="equipment"

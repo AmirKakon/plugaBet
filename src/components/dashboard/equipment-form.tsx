@@ -19,7 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { EQUIPMENT_LIST } from "@/lib/constants";
 import { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle, Loader2, Check, X, ArrowLeft } from "lucide-react";
+import { CheckCircle, Loader2, Check, X, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -243,11 +243,12 @@ export function EquipmentForm() {
               control={form.control}
               name="confirmation"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm" dir="rtl">
-                  <FormControl>
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+                   <FormControl>
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
+                      className="ml-2"
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
@@ -261,7 +262,7 @@ export function EquipmentForm() {
             />
             <div className="flex gap-4">
               <Button type="button" onClick={() => setStep(1)} variant="outline">
-                <ArrowLeft className="ml-2 h-4 w-4" />
+                <ArrowRight className="mr-2 h-4 w-4" />
                 חזור
               </Button>
               <Button type="submit" disabled={isSubmitting} variant="accent" size="lg">

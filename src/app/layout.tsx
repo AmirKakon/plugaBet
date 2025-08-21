@@ -31,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="he" dir="rtl" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -43,30 +43,6 @@ export default function RootLayout({
       <body className={`${inter.variable} font-body antialiased`} suppressHydrationWarning>
          <SidebarProvider>
           <div className="flex min-h-screen">
-            <Sidebar>
-              <SidebarHeader className="p-4">
-                <Link href="/" className="flex items-center gap-2">
-                  <Shield className="w-8 h-8 text-primary" />
-                  <h1 className="text-xl font-semibold">פלוגה ב</h1>
-                </Link>
-              </SidebarHeader>
-              <SidebarContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      asChild
-                      isActive
-                      tooltip={{ children: 'טופס ציוד', side: 'right' }}
-                    >
-                      <Link href="/">
-                        <ClipboardList />
-                        <span>טופס ציוד</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarContent>
-            </Sidebar>
             <SidebarInset className="flex flex-col">
               <header className="flex h-14 items-center gap-4 border-b bg-card px-6 sticky top-0 z-30">
                 <SidebarTrigger className="md:hidden" />
@@ -79,6 +55,30 @@ export default function RootLayout({
                 {children}
               </main>
             </SidebarInset>
+            <Sidebar side="right">
+              <SidebarHeader className="p-4">
+                <Link href="/" className="flex items-center gap-2">
+                  <Shield className="w-8 h-8 text-primary" />
+                  <h1 className="text-xl font-semibold">פלוגה ב</h1>
+                </Link>
+              </SidebarHeader>
+              <SidebarContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      isActive
+                      tooltip={{ children: 'טופס ציוד', side: 'left' }}
+                    >
+                      <Link href="/">
+                        <ClipboardList />
+                        <span>טופס ציוד</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarContent>
+            </Sidebar>
           </div>
         </SidebarProvider>
         <Toaster />
