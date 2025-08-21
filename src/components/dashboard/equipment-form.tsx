@@ -402,7 +402,7 @@ export function EquipmentForm() {
                 <ArrowRight className="mr-2 h-4 w-4" />
                 חזור
               </Button>
-              <Button type="submit" disabled={isSubmitting} variant="default" size="lg" className="hover:bg-primary/80">
+              <Button type="button" onClick={form.handleSubmit(onSubmit)} disabled={isSubmitting} variant="default" size="lg" className="hover:bg-primary/80">
                 {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח"}
               </Button>
             </div>
