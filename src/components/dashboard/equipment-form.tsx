@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,9 +12,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/components/ui/form"; 
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { BACKEND_BASE_URL } from "@/lib/constants";
@@ -122,7 +123,6 @@ export function EquipmentForm() {
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("onSubmit triggered");
     setIsSubmitting(true);
     try {
       const response = await fetch(`${BACKEND_BASE_URL}/api/forms`, {
@@ -179,11 +179,7 @@ export function EquipmentForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit((values) => {
-        console.log("Inline form onSubmit triggered");
-        console.log("handleSubmit called");
-        onSubmit(values);
-      })} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" noValidate>
         {step === 1 && (
            <div className="space-y-8">
              <div>
@@ -407,9 +403,9 @@ export function EquipmentForm() {
                 <ArrowRight className="mr-2 h-4 w-4" />
                 חזור
               </Button>
-              <Button type="submit" disabled={isSubmitting} variant="default" size="lg">
+              <button type="submit" disabled={isSubmitting} className={cn(buttonVariants({ variant: "default", size: "lg" }), "bg-accent text-accent-foreground hover:bg-accent/80")}> 
                 {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח"}
- </Button>
+              </button>
             </div>
           </div>
         )}
@@ -417,3 +413,5 @@ export function EquipmentForm() {
     </Form>
   );
 }
+
+    

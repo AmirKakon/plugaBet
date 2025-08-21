@@ -17,9 +17,7 @@ export default function DashboardPage() {
             נא למלא את הטופס בתחילת כל משמרת. יש לוודא את תקינות כלל הציוד הרשום.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <EquipmentForm />
-        </CardContent>
+        <CardContent><EquipmentForm /></CardContent>
       </Card>
     </div>
   );
