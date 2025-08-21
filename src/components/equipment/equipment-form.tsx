@@ -50,7 +50,7 @@ const formSchema = z.object({
   equipmentStatus: z.array(equipmentStatusSchema),
 }).refine(data => {
     for (const item of data.equipmentStatus) {
-        if (item.hasPhysicalId && !item.physicalId) {
+        if (item.hasPhysicalId && (!item.physicalId || item.physicalId.trim() === '')) {
             return false;
         }
     }
@@ -376,7 +376,7 @@ export function EquipmentForm() {
                         חזור
                     </Button>
                     <button type="submit" disabled={isSubmitting} className={cn(buttonVariants({ size: "lg" }))}>
-                        {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח חתימה"}
+                        {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח"}
                     </button>
                 </div>
             </div>
