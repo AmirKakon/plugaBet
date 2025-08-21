@@ -5,17 +5,10 @@ import { Toaster } from '@/components/ui/toaster';
 import type React from 'react';
 import {
   SidebarProvider,
-  Sidebar,
-  SidebarHeader,
-  SidebarContent,
-  SidebarTrigger,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
   SidebarInset,
+  SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { ClipboardList, Shield } from 'lucide-react';
-import Link from 'next/link';
+import { MainSidebar } from '@/components/layout/main-sidebar';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -39,8 +32,11 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={`${inter.variable} font-body antialiased`} suppressHydrationWarning>
-         <SidebarProvider>
+      <body
+        className={`${inter.variable} font-body antialiased`}
+        suppressHydrationWarning
+      >
+        <SidebarProvider>
           <div className="flex min-h-screen">
             <SidebarInset className="flex flex-col">
               <header className="flex h-14 items-center gap-4 border-b bg-card px-6 sticky top-0 z-30">
@@ -53,41 +49,7 @@ export default function RootLayout({
                 {children}
               </main>
             </SidebarInset>
-            <Sidebar side="right">
-              <SidebarHeader className="p-4">
-                <Link href="/" className="flex items-center gap-2">
-                  <Shield className="w-8 h-8 text-primary" />
-                  <h1 className="text-xl font-semibold">פלוגה ב</h1>
-                </Link>
-              </SidebarHeader>
-              <SidebarContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      asChild
-                      isActive
-                      tooltip={{ children: 'טופס ציוד', side: 'left' }}
-                    >
-                      <Link href="/">
-                        <ClipboardList />
-                        <span>טופס ציוד</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                   <SidebarMenuItem>
-                    <SidebarMenuButton
-                      asChild
-                      tooltip={{ children: 'ניהול', side: 'left' }}
-                    >
-                      <Link href="/admin">
-                        <Shield />
-                        <span>ניהול</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarContent>
-            </Sidebar>
+            <MainSidebar />
           </div>
         </SidebarProvider>
         <Toaster />
