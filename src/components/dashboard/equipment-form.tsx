@@ -110,15 +110,16 @@ export function EquipmentForm() {
     name: "equipment",
   });
 
-  async function handleNextStep(currentStep: number, targetStep: number) {
-     let isValid = false;
-     if (currentStep === 1) {
-        isValid = await form.trigger(["task"]);
-     } else if (currentStep === 2) {
-       isValid = await form.trigger(["firstName", "lastName", "soldierId"]);
-     }
+  async function handleNextStep() {
+    let isValid = false;
+    if (step === 1) {
+      isValid = await form.trigger(["task"]);
+    } else if (step === 2) {
+      isValid = await form.trigger(["firstName", "lastName", "soldierId"]);
+    }
+    
     if (isValid) {
-      setStep(targetStep);
+      setStep(step + 1);
     }
   }
 
@@ -205,7 +206,7 @@ export function EquipmentForm() {
                                 onClick={() => {
                                   field.onChange(task.name);
                                   setSelectedTask(task);
-                                  handleNextStep(1,2);
+                                  handleNextStep();
                                 }}
                               >
                                 {task.name}
@@ -272,7 +273,7 @@ export function EquipmentForm() {
                <Button type="button" onClick={() => setStep(1)} variant="outline">
                 חזור
               </Button>
-              <Button onClick={() => handleNextStep(2, 3)} size="lg">הבא</Button>
+              <Button onClick={handleNextStep} size="lg">הבא</Button>
             </div>
           </div>
         )}
@@ -403,7 +404,7 @@ export function EquipmentForm() {
                 <ArrowRight className="mr-2 h-4 w-4" />
                 חזור
               </Button>
-              <button type="submit" disabled={isSubmitting} className={cn(buttonVariants({ variant: "default", size: "lg" }), "bg-accent text-accent-foreground hover:bg-accent/80")}> 
+              <button type="submit" disabled={isSubmitting} className={cn(buttonVariants({ variant: "default", size: "lg" }), "bg-primary text-primary-foreground hover:bg-primary/90")}> 
                 {isSubmitting ? <Loader2 className="animate-spin" /> : "שלח"}
               </button>
             </div>
@@ -413,3 +414,5 @@ export function EquipmentForm() {
     </Form>
   );
 }
+
+    
