@@ -19,13 +19,13 @@ To support the frontend functionalities, the following backend endpoints will be
 
 - **Authentication:**
   - `POST /api/auth/login`: Endpoint for user login.
-  - `POST /api/auth/register`: Endpoint for new user registration (likely admin-only).
-  - `GET /api/auth/user`: Endpoint to get the currently authenticated user's information.
+- **Tasks:**
+  - `GET /api/tasks`: Endpoint to get all tasks.
+  - `GET /api/tasks/:taskId/items`: Endpoint to get all items of the task for the form.
 - **Form Management:**
-  - `POST /api/forms`: Endpoint to create a new equipment form (admin-only).
+  - `POST /api/forms`: Endpoint to create a new equipment form.
   - `GET /api/forms`: Endpoint to retrieve all forms or specific forms based on query parameters (e.g., by date, shift).
   - `GET /api/forms/:id`: Endpoint to retrieve a specific form by ID.
-  - `PUT /api/forms/:id/sign`: Endpoint to allow a user to sign a specific form.
 - **Data Summary:**
   - `GET /api/summary`: Endpoint to retrieve summarized equipment history data.
 
