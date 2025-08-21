@@ -100,10 +100,11 @@ export function EquipmentForm() {
         const newEquipmentStatus = selectedTask.items.map(item => ({
           equipmentId: item.id,
           name: item.name,
-          quantity: item.quantity,
+          quantity: item.quantity ?? 0,
           status: "ok" as const,
           comment: "",
-          physicalId: ""
+          physicalId: "",
+          hasPhysicalId: item.physicalId,
         }));
         replace(newEquipmentStatus);
       }
@@ -273,8 +274,8 @@ export function EquipmentForm() {
                     <Card key={item.id} className="p-4">
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                             <div className="md:col-span-2">
-                                <h4 className="font-bold text-lg">{item.name} <span className="text-sm text-muted-foreground font-normal">(כמות: {item.quantity})</span></h4>
-                            </div>
+                                <h4 className="font-bold text-lg">{item.name}</h4>
+                           </div>
 
                             <FormField
                                 control={form.control}
@@ -307,6 +308,23 @@ export function EquipmentForm() {
                                 )}
                             />
 
+                           <FormField
+                                control={form.control}
+                                name={`equipmentStatus.${index}.quantity`}
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>כמות בפועל</FormLabel>
+                                    <FormControl>
+                                    <Input
+                                        type="number"
+                                        {...field}
+                                        onChange={e => field.onChange(parseInt(e.target.value, 10) || 0)} // Ensure number type
+                                    />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
                             {item.hasPhysicalId && (
                                <FormField
                                     control={form.control}
