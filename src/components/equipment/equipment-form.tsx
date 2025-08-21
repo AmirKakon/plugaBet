@@ -189,31 +189,22 @@ export function EquipmentForm() {
                     <h3 className="text-lg font-medium">שלב 1: בחירת משימה</h3>
                     <p className="text-sm text-muted-foreground">בחר את המשימה שעבורה אתה חותם על ציוד.</p>
                 </div>
-                 <FormField
-                    control={form.control}
-                    name="task"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>שם משימה</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="בחר משימה מהרשימה" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                            {tasks.map(task => (
-                                <SelectItem key={task.id} value={task.id}>
-                                    {task.name}
-                                </SelectItem>
-                            ))}
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <Button onClick={handleNextStep} size="lg" type="button">הבא</Button>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+ {tasks.map(task => (
+ <Button
+ key={task.id}
+ type="button"
+ variant={form.watch("task") === task.id ? "default" : "outline"}
+ className="p-8 text-xl h-auto"
+ onClick={() => {
+ form.setValue("task", task.id);
+ handleNextStep();
+ }}
+ >
+ {task.name}
+                    </Button>
+                    ))}
+                </div>
             </div>
         )}
 
