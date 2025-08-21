@@ -23,6 +23,7 @@ import { CheckCircle, Loader2, Check, X, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { Task, Equipment } from "@/lib/types";
+import { useToast } from "@/hooks/use-toast";
 
 const equipmentStatusSchema = z.object({
   equipmentId: z.string(),
@@ -58,6 +59,7 @@ export function EquipmentForm() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoadingTasks, setIsLoadingTasks] = useState(true);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -119,14 +121,32 @@ export function EquipmentForm() {
     }
   }
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    console.log(values);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const response = await fetch(`${BACKEND_BASE_URL}/api/forms`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...values, date: new Date().toISOString() }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
+
       setIsSuccess(true);
-      // form.reset(); // Don't reset, so we can show the success message
-    }, 1500);
+    } catch (error) {
+      toast({
+        title: "שגיאה",
+        description: "הייתה בעיה בשליחת הטופס. נסה שוב.",
+        variant: "destructive",
+      })
+      console.error("Form submission error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   if (isSuccess) {
