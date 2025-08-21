@@ -115,8 +115,19 @@ export function EquipmentForm() {
 
 
   async function handleNextStep() {
-    setStep(s => s + 1);
+    let isValid = false;
+    if (step === 1) {
+      isValid = await form.trigger("task");
+    } else if (step === 2) {
+      isValid = await form.trigger(["firstName", "lastName", "soldierId"]);
+    }
+
+    if (isValid) {
+      setStep(s => s + 1);
+    }
   }
+
+
 
   async function onSubmit(values: EquipmentFormValues) {
     setIsSubmitting(true);
