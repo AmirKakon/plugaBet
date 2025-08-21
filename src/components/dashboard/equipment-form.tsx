@@ -88,7 +88,7 @@ export function EquipmentForm() {
         equipmentId: eq.id,
         name: eq.name,
         status: "ok" as const,
-        quantity: eq.defaultQuantity ?? 0,
+        quantity: eq.quantity ?? 0,
         comment: "",
       }));
       form.setValue('equipment', equipmentData);

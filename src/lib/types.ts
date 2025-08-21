@@ -2,7 +2,7 @@ export type Equipment = {
   id: string;
   name: string;
   description: string;
-  defaultQuantity: number;
+  quantity: number;
 };
 
 export type EquipmentStatus = {

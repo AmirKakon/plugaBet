@@ -3,12 +3,12 @@ export const BACKEND_BASE_URL = 'https://us-central1-pluga-bet.cloudfunctions.ne
 import type { Submission, Equipment } from './types';
 
 export const EQUIPMENT_LIST: Equipment[] = [
-  { id: 'vehicle', name: 'רכב האמר M1151', description: 'בדיקה כללית, דלק, שמן, מים.', defaultQuantity: 1 },
-  { id: 'radio_prc', name: 'קשר AN/PRC-152', description: 'סוללה, אנטנה, תקינות כללית.', defaultQuantity: 2 },
-  { id: 'radio_vhf', name: 'קשר VHF', description: 'בדיקת תדרים וסוללה.', defaultQuantity: 2 },
-  { id: 'nvg', name: 'אמצעי ראיית לילה', description: 'תקינות, סוללות, כיסויים.', defaultQuantity: 4 },
-  { id: 'first_aid', name: 'ערכת עזרה ראשונה', description: 'תכולה מלאה, תוקף פריטים.', defaultQuantity: 1 },
-  { id: 'weapon', name: 'נשק אישי', description: 'נקי, משומן, תקין.', defaultQuantity: 4 },
+  { id: 'vehicle', name: 'רכב האמר M1151', description: 'בדיקה כללית, דלק, שמן, מים.', quantity: 1 },
+  { id: 'radio_prc', name: 'קשר AN/PRC-152', description: 'סוללה, אנטנה, תקינות כללית.', quantity: 2 },
+  { id: 'radio_vhf', name: 'קשר VHF', description: 'בדיקת תדרים וסוללה.', quantity: 2 },
+  { id: 'nvg', name: 'אמצעי ראיית לילה', description: 'תקינות, סוללות, כיסויים.', quantity: 4 },
+  { id: 'first_aid', name: 'ערכת עזרה ראשונה', description: 'תכולה מלאה, תוקף פריטים.', quantity: 1 },
+  { id: 'weapon', name: 'נשק אישי', description: 'נקי, משומן, תקין.', quantity: 4 },
 ];
 
 export const RANKS = ['טוראי', 'רב"ט', 'סמל', 'סמ"ר', 'רס"ל'];
@@ -37,7 +37,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     lastName: 'לוי',
     soldierId: '7654321',
     date: new Date('2024-08-21T08:00:00Z'),
-    equipmentStatus: EQUIPMENT_LIST.map((eq) => ({ equipmentId: eq.id, status: 'ok', quantity: eq.defaultQuantity })),
+    equipmentStatus: EQUIPMENT_LIST.map((eq) => ({ equipmentId: eq.id, status: 'ok', quantity: eq.quantity })),
   },
   {
     id: 'sub3',
@@ -62,6 +62,6 @@ export const MOCK_SUBMISSIONS: Submission[] = [
     lastName: 'שחר',
     soldierId: '4455667',
     date: new Date('2024-08-19T18:00:00Z'),
-    equipmentStatus: EQUIPMENT_LIST.map((eq) => ({ equipmentId: eq.id, status: 'ok', quantity: eq.defaultQuantity })),
+    equipmentStatus: EQUIPMENT_LIST.map((eq) => ({ equipmentId: eq.id, status: 'ok', quantity: eq.quantity })),
   },
 ];
