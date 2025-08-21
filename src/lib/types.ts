@@ -8,7 +8,7 @@ export type Equipment = {
 
 export type EquipmentStatus = {
   equipmentId: string;
-  status: 'ok' | 'issue';
+  status: 'ok' | 'issue' | 'exists' | 'missing';
   quantity: number;
   comment?: string;
   physicalId?: string;
@@ -30,12 +30,3 @@ export type Task = {
     name: string;
     items: Equipment[];
 }
-
-export type Attendance = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  soldierId: string;
-  date: string;
-  sleepingOnBase: boolean;
-};

@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Shield, Home, CalendarCheck, FileSignature } from 'lucide-react';
+import { Shield, Home, FileSignature } from 'lucide-react';
 
 export function MainSidebar() {
   const { setOpenMobile } = useSidebar();
@@ -34,18 +34,6 @@ export function MainSidebar() {
               <Link href="/">
                 <Home />
                 <span>דף הבית</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              tooltip={{ children: 'דיווח נוכחות', side: 'left' }}
-              onClick={() => setOpenMobile(false)}
-            >
-              <Link href="/attendance">
-                <CalendarCheck />
-                <span>דיווח נוכחות</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

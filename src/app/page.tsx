@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { ArrowLeft, FileSignature, CalendarCheck } from 'lucide-react';
+import { ArrowLeft, FileSignature } from 'lucide-react';
 import Link from 'next/link';
 
 export default function HomePage() {
@@ -22,26 +22,7 @@ export default function HomePage() {
               כאן תוכלו לנהל את משימות ונוכחות החיילים בפלוגה.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <Card className="text-right flex flex-col">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CalendarCheck className="w-6 h-6 text-accent" />
-                  <span>דיווח נוכחות</span>
-                </CardTitle>
-                <CardDescription>
-                  מלאו את טופס הנוכחות היומי וציינו אם אתם נשארים ללינה בבסיס.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow flex items-end">
-                <Button asChild size="lg" className="w-full">
-                  <Link href="/attendance">
-                    <span>למעבר לטופס</span>
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
              <Card className="text-right flex flex-col">
               <CardHeader>
                  <CardTitle className="flex items-center gap-2">
@@ -61,7 +42,7 @@ export default function HomePage() {
                 </Button>
               </CardContent>
             </Card>
-            <Card className="text-right flex flex-col md:col-span-2 lg:col-span-1">
+            <Card className="text-right flex flex-col">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <svg
