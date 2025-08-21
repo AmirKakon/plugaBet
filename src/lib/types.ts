@@ -14,6 +14,7 @@ export type EquipmentStatus = {
 
 export type Submission = {
   id: string;
+  task: string;
   firstName: string;
   lastName: string;
   soldierId: string;

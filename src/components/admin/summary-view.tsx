@@ -66,6 +66,7 @@ export function SummaryView() {
               <TableRow>
                 <TableHead>שם חייל</TableHead>
                 <TableHead>מ"א</TableHead>
+                <TableHead>משימה</TableHead>
                 <TableHead>תאריך</TableHead>
                 <TableHead className="text-left">סטטוס</TableHead>
               </TableRow>
@@ -77,6 +78,7 @@ export function SummaryView() {
                   <TableRow key={submission.id}>
                     <TableCell className="font-medium">{`${submission.firstName} ${submission.lastName}`}</TableCell>
                     <TableCell>{submission.soldierId}</TableCell>
+                    <TableCell>{submission.task}</TableCell>
                     <TableCell>{format(submission.date, 'dd/MM/yyyy HH:mm')}</TableCell>
                     <TableCell className="text-left">
                       <Badge variant={status.variant}>{status.text}</Badge>

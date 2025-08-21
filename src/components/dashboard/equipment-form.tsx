@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import { EQUIPMENT_LIST } from "@/lib/constants";
+import { EQUIPMENT_LIST, TASKS } from "@/lib/constants";
 import { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle, Loader2, Check, X, ArrowRight } from "lucide-react";
@@ -35,6 +35,7 @@ const equipmentStatusSchema = z.object({
 });
 
 const formSchema = z.object({
+  task: z.string({ required_error: "יש לבחור משימה" }),
   firstName: z.string().min(2, { message: "שם פרטי הוא שדה חובה" }),
   lastName: z.string().min(2, { message: "שם משפחה הוא שדה חובה" }),
   soldierId: z.string().regex(/^[0-9]{7}$/, { message: "מספר אישי לא תקין" }),
@@ -52,6 +53,7 @@ export function EquipmentForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      task: "",
       firstName: "",
       lastName: "",
       soldierId: "",
@@ -71,10 +73,15 @@ export function EquipmentForm() {
     name: "equipment",
   });
 
-  async function handleNextStep() {
-    const isValid = await form.trigger(["firstName", "lastName", "soldierId"]);
+  async function handleNextStep(currentStep: number, targetStep: number) {
+     let isValid = false;
+     if (currentStep === 1) {
+        isValid = await form.trigger(["task"]);
+     } else if (currentStep === 2) {
+       isValid = await form.trigger(["firstName", "lastName", "soldierId"]);
+     }
     if (isValid) {
-      setStep(2);
+      setStep(targetStep);
     }
   }
 
@@ -111,9 +118,45 @@ export function EquipmentForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         {step === 1 && (
+           <div className="space-y-8">
+             <div>
+               <h3 className="text-lg font-medium">שלב 1: בחירת משימה</h3>
+               <p className="text-sm text-muted-foreground">נא לבחור את המשימה עבורה ממולא הטופס.</p>
+             </div>
+              <FormField
+                control={form.control}
+                name="task"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormControl>
+                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {TASKS.map((task) => (
+                           <Button
+                              key={task}
+                              type="button"
+                              variant={field.value === task ? "accent" : "outline"}
+                              className="p-8 text-xl h-auto"
+                              onClick={() => {
+                                field.onChange(task);
+                                handleNextStep(1,2);
+                              }}
+                            >
+                              {task}
+                            </Button>
+                        ))}
+                       </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+           </div>
+        )}
+
+        {step === 2 && (
           <div className="space-y-8">
             <div>
-              <h3 className="text-lg font-medium">שלב 1: פרטים אישיים</h3>
+              <h3 className="text-lg font-medium">שלב 2: פרטים אישיים</h3>
               <p className="text-sm text-muted-foreground">נא למלא את פרטי החייל/ת המקבל/ת את המשמרת.</p>
             </div>
             <div className="grid md:grid-cols-2 gap-8">
@@ -157,14 +200,19 @@ export function EquipmentForm() {
                   </FormItem>
                 )}
               />
-            <Button onClick={handleNextStep} size="lg">הבא</Button>
+            <div className="flex gap-4">
+               <Button type="button" onClick={() => setStep(1)} variant="outline">
+                חזור
+              </Button>
+              <Button onClick={() => handleNextStep(2, 3)} size="lg">הבא</Button>
+            </div>
           </div>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <div className="space-y-8">
              <div>
-              <h3 className="text-lg font-medium">שלב 2: בדיקת ציוד</h3>
+              <h3 className="text-lg font-medium">שלב 3: בדיקת ציוד</h3>
               <p className="text-sm text-muted-foreground">נא לוודא את תקינות וכמות כלל הציוד הרשום.</p>
             </div>
             <div className="space-y-6">
@@ -261,7 +309,7 @@ export function EquipmentForm() {
               )}
             />
             <div className="flex gap-4">
-              <Button type="button" onClick={() => setStep(1)} variant="outline">
+              <Button type="button" onClick={() => setStep(2)} variant="outline">
                 <ArrowRight className="mr-2 h-4 w-4" />
                 חזור
               </Button>

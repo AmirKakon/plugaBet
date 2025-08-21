@@ -9,11 +9,14 @@ export const EQUIPMENT_LIST = [
   { id: 'weapon', name: 'נשק אישי', description: 'נקי, משומן, תקין.', defaultQuantity: 4 },
 ];
 
+export const TASKS = ['סיור', 'כרמל', 'בין ברכיים'];
+
 export const RANKS = ['טוראי', 'רב"ט', 'סמל', 'סמ"ר', 'רס"ל'];
 
 export const MOCK_SUBMISSIONS: Submission[] = [
   {
     id: 'sub1',
+    task: 'סיור',
     firstName: 'משה',
     lastName: 'כהן',
     soldierId: '1234567',
@@ -29,6 +32,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
   },
   {
     id: 'sub2',
+    task: 'כרמל',
     firstName: 'דנה',
     lastName: 'לוי',
     soldierId: '7654321',
@@ -37,6 +41,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
   },
   {
     id: 'sub3',
+    task: 'בין ברכיים',
     firstName: 'אבי',
     lastName: 'ישראלי',
     soldierId: '1122334',
@@ -52,6 +57,7 @@ export const MOCK_SUBMISSIONS: Submission[] = [
   },
    {
     id: 'sub4',
+    task: 'סיור',
     firstName: 'יעל',
     lastName: 'שחר',
     soldierId: '4455667',
