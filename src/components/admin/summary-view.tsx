@@ -150,7 +150,7 @@ export function SummaryView() {
               <Skeleton className="h-48 w-full" />
             ) : issueData.length > 0 ? (
             <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-              <BarChart accessibilityLayer data={issueData} layout="vertical" margin={{ left: 0, right: 10 }}>
+              <BarChart accessibilityLayer data={issueData} layout="vertical" margin={{ left: 10, right: 10 }}>
                 <CartesianGrid horizontal={false} />
                 <YAxis
                   dataKey="equipment"
@@ -160,7 +160,7 @@ export function SummaryView() {
                   axisLine={false}
                   tickFormatter={(value) => value.slice(0, 15)}
                   reversed
-                  width={80}
+                  width={100}
                 />
                 <XAxis dataKey="issues" type="number" hide />
                 <ChartTooltip
