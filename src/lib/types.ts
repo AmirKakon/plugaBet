@@ -1,3 +1,4 @@
+
 export type Equipment = {
   id: string;
   name: string;
@@ -7,12 +8,11 @@ export type Equipment = {
 };
 
 export type EquipmentStatus = {
-  equipmentId: string;
-  status: 'ok' | 'issue' | 'exists' | 'missing';
+  equipmentId: number;
+  name: string;
   quantity: number;
+  status: 'exists' | 'missing';
   comment?: string;
-  physicalId?: string;
-  hasPhysicalId: boolean;
 };
 
 export type Submission = {
@@ -21,7 +21,7 @@ export type Submission = {
   firstName: string;
   lastName: string;
   soldierId: string;
-  date: Date;
+  date: string; // ISO date string from backend
   equipmentStatus: EquipmentStatus[];
 };
 
