@@ -1,4 +1,4 @@
-export const BACKEND_BASE_URL = 'https://us-central1-pluga-bet.cloudfunctions.net/app';
+export const BACKEND_BASE_URL = 'https://us-central1-plugabet419.cloudfunctions.net/app';
 
 import type { Submission, Equipment } from './types';
 
