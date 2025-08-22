@@ -24,6 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface FormDetailDialogProps {
   submissionId: string | null;
@@ -105,7 +106,7 @@ export function FormDetailDialog({ submissionId, onOpenChange }: FormDetailDialo
             
             <div>
               <h4 className="font-semibold mb-2 text-base">פירוט ציוד</h4>
-              <div className="border rounded-md">
+              <ScrollArea className="h-[300px] w-full border rounded-md">
                  <Table>
                     <TableHeader>
                         <TableRow>
@@ -126,7 +127,7 @@ export function FormDetailDialog({ submissionId, onOpenChange }: FormDetailDialo
                         ))}
                     </TableBody>
                 </Table>
-              </div>
+              </ScrollArea>
             </div>
           </div>
         )}
